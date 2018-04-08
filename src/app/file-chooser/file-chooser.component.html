@@ -1,0 +1,7 @@
+<button mat-raised-button
+  color="primary"
+  (click)="audioInput.click()"
+  >Choose audio file</button>
+
+<input hidden type="file" #audioInput
+  (change)="setUpAudioFile($event.target.files)"/>
