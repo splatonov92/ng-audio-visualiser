@@ -1,11 +1,24 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+import { Subject } from 'rxjs/Subject';
+
+class AudioData {
+  bufferLength: number;
+  dataArray: Uint8Array;
+}
 
 @Injectable()
 export class AudioService {
 
+  private subject: Subject<AudioData>;
+  private data: Observable<AudioData>;
+  private dataObserver: Observer<AudioData>;
   audioFile: File;
 
-  constructor() { }
+  constructor() {
+    this.subject = new Subject<AudioData>();
+  }
 
   setFile(file: File) {
     this.audioFile = file;
@@ -13,5 +26,13 @@ export class AudioService {
 
   getFileUrl() {
     return URL.createObjectURL(this.audioFile);
+  }
+
+  getAudioData(): Subject<AudioData> {
+    return this.subject;
+  }
+
+  setInitialData(data: AudioData) {
+    this.subject.next(data);
   }
 }

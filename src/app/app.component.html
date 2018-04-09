@@ -1,17 +1,33 @@
-<mat-drawer-container autosize>
+<ng-container>
+  <mat-toolbar color="primary">
+    <span>{{title}}</span>
+  </mat-toolbar>
 
-  <mat-drawer #drawer  mode="side">
-    <app-file-chooser></app-file-chooser>
-  </mat-drawer>
+  <mat-sidenav-container autosize>
 
-  <div class="example-sidenav-content">
-    <button type="button" mat-button (click)="drawer.toggle()">
-      Toggle sidenav
-    </button>
+    <mat-sidenav #sidenav class="sidenav relative" opened="true" mode="side" [fixedInViewport]="true">
+      <mat-toolbar color="primary">
+        <span>{{title}}</span>
+      </mat-toolbar>
 
-    <app-audio-visualaser>
+      <div class="padded">
+        <app-file-chooser></app-file-chooser>
+        <button mat-raised-button class="spreading top-margined" color="primary" (click)="onBtnPlay()">Start</button>
+        <button mat-raised-button class="spreading top-margined" color="primary" (click)="setAudioSource()">Set audio source</button>
+      </div>
 
-    </app-audio-visualaser>
-  </div>
+      <audio #audioOption controls (play)="onPlay()"></audio>
+    </mat-sidenav>
 
-</mat-drawer-container>
+    <div class="example-sidenav-content">
+      <button type="button" mat-button (click)="sidenav.toggle()">
+        Toggle sidenav
+      </button>
+
+      <app-audio-visualaser>
+
+      </app-audio-visualaser>
+    </div>
+
+  </mat-sidenav-container>
+</ng-container>

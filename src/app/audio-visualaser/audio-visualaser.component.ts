@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { AudioService } from '../services/audio/audio.service';
 
 @Component({
@@ -9,57 +9,37 @@ import { AudioService } from '../services/audio/audio.service';
 export class AudioVisualaserComponent implements OnInit {
 
   @ViewChild('audioOption') audioPlayerRef: ElementRef;
+  @ViewChild('canvas') canvasRef: ElementRef;
 
-  constructor(private audioService: AudioService) { }
+  constructor(private audioService: AudioService) {
+  }
 
   ngOnInit() {
-  }
 
-  setAudioSource() {
-    const audioPlayer = this.audioPlayerRef.nativeElement;
-    audioPlayer.src = this.audioService.getFileUrl();
-    audioPlayer.load();
-  }
+    console.log('call ngOnInit visualizer Function');
 
-  onBtnPlay() {
-    this.audioPlayerRef.nativeElement.play();
-  }
-
-  onPlay() {
-
-    console.log('call OnPlay Function');
-
-    const audioPlayer = this.audioPlayerRef.nativeElement;
-    audioPlayer.play();
-
-    const context = new AudioContext();
-    const audioSrc = context.createMediaElementSource(audioPlayer);
-    const analyser = context.createAnalyser();
-
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const canvas = this.canvasRef.nativeElement;
     const ctx = canvas.getContext('2d');
 
-    audioSrc.connect(analyser);
-    audioSrc.connect(context.destination);
-
-    analyser.fftSize = 1024;
-
-    const bufferLength = analyser.frequencyBinCount;
-    console.log(bufferLength);
-
-    const dataArray = new Uint8Array(bufferLength);
     const WIDTH = canvas.width;
     const HEIGHT = 256;
 
-    const barWidth = (WIDTH / bufferLength) * 2.5;
+    let barWidth = 0; // (WIDTH / bufferLength) * 2.5;
     let barHeight;
     let x = 0;
 
-    function renderFrame() {
+    const audioService = this.audioService;
 
-      requestAnimationFrame(renderFrame);
+    this.audioService.getAudioData().subscribe(({ bufferLength, dataArray }) => {
+      barWidth = (WIDTH / bufferLength) * 2.5;
+      renderFrame(bufferLength, dataArray);
+    });
+
+    function renderFrame(bufferLength, dataArray) {
+
+      // requestAnimationFrame(renderFrame);
       x = 0;
-      analyser.getByteFrequencyData(dataArray);
+  //      analyser.getByteFrequencyData(dataArray);
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -95,8 +75,5 @@ export class AudioVisualaserComponent implements OnInit {
         x += barWidth + 3;
       }
     }
-
-    // audioPlayer.play();
-    renderFrame();
   }
 }
