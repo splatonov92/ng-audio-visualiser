@@ -1,13 +1,19 @@
 <ng-container>
   <mat-toolbar color="primary">
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
     <span>{{title}}</span>
   </mat-toolbar>
 
-  <mat-sidenav-container autosize>
+  <mat-sidenav-container>
 
-    <mat-sidenav #sidenav class="sidenav relative" opened="true" mode="side" [fixedInViewport]="true">
+    <mat-sidenav #sidenav class="sidenav relative" opened="false" mode="side" [fixedInViewport]="true">
       <mat-toolbar color="primary">
-        <span>{{title}}</span>
+          <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
+          <span>{{title}}</span>
       </mat-toolbar>
 
       <div class="padded">
@@ -19,14 +25,8 @@
       <audio #audioOption controls (play)="onPlay()"></audio>
     </mat-sidenav>
 
-    <div class="example-sidenav-content">
-      <button type="button" mat-button (click)="sidenav.toggle()">
-        Toggle sidenav
-      </button>
-
-      <app-audio-visualaser>
-
-      </app-audio-visualaser>
+    <div class="sidenav-content">
+      <app-audio-visualaser></app-audio-visualaser>
     </div>
 
   </mat-sidenav-container>
