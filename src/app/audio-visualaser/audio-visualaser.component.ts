@@ -8,7 +8,6 @@ import { AudioService } from '../services/audio/audio.service';
 })
 export class AudioVisualaserComponent implements OnInit {
 
-  @ViewChild('audioOption') audioPlayerRef: ElementRef;
   @ViewChild('canvas') canvasRef: ElementRef;
 
   constructor(private audioService: AudioService) {
@@ -16,30 +15,28 @@ export class AudioVisualaserComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log('call ngOnInit visualizer Function');
-
     const canvas = this.canvasRef.nativeElement;
     const ctx = canvas.getContext('2d');
 
     const WIDTH = canvas.width;
     const HEIGHT = 256;
 
-    let barWidth = 0; // (WIDTH / bufferLength) * 2.5;
+    let barWidth = 0;
     let barHeight;
     let x = 0;
+    const step = 3;
 
-    const audioService = this.audioService;
-
-    this.audioService.getAudioData().subscribe(({ bufferLength, dataArray }) => {
-      barWidth = (WIDTH / bufferLength) * 2.5;
-      renderFrame(bufferLength, dataArray);
-    });
+    this.audioService.getAudioData()
+      .subscribe(({ bufferLength, dataArray }) => {
+        barWidth = (WIDTH / bufferLength);
+        renderFrame(bufferLength, dataArray);
+      });
 
     function renderFrame(bufferLength, dataArray) {
 
       // requestAnimationFrame(renderFrame);
       x = 0;
-  //      analyser.getByteFrequencyData(dataArray);
+      // analyser.getByteFrequencyData(dataArray);
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -51,28 +48,33 @@ export class AudioVisualaserComponent implements OnInit {
       //   const angle = Math.PI * 2 / bufferLength * i;
       //   const hsl = `hsl( ${y} ,100%, 50%)`;
 
+      console.log(bufferLength, barWidth, barHeight);
+
       for (let i = 0; i < bufferLength; i++) {
 
         barHeight = dataArray[i];
 
         const angle = Math.PI * 2 / bufferLength * i;
         const hsl = `hsl(${barHeight}, 100%, 50%)`;
-        // const r = 50;
-        // const g = 250 * (i / bufferLength);
-        // const b = barHeight + (25 * (i / bufferLength));
+        const r = 20;
+        const g = 250 * (i / bufferLength);
+        const b = barHeight / 3;
 
-        ctx.fillStyle = hsl; // 'rgb(' + r + ',' + g + ',' + b + ')';
-        ctx.strokeStyle = hsl; // 'rgb(' + r + ',' + g + ',' + b + ')';
+        // ctx.fillStyle = hsl;
+        // ctx.strokeStyle = hsl;
 
-        ctx.shadowColor = hsl;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        ctx.shadowBlur    = 25;
+        ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+        ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+
+        // ctx.shadowColor = hsl;
+        // ctx.shadowOffsetX = 0;
+        // ctx.shadowOffsetY = 0;
+        // ctx.shadowBlur    = 25;
 
         ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
         ctx.strokeRect(x, HEIGHT - barHeight, barWidth, barHeight);
 
-        x += barWidth + 3;
+        x += barWidth + 1;
       }
     }
   }

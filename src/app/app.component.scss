@@ -1,9 +1,10 @@
+
+$appbarHeight: 56px;
+
 .sidenav {
   width: 300px;
+  overflow: hidden;
   box-shadow: 0 0 1px 0 #ccc;
-}
-.padded {
-  padding: 20px;
 }
 
 .spreading {
@@ -18,23 +19,19 @@
   width: 100%;
 }
 
-audio {
-  position: fixed;
-  z-index: 1;
-  bottom: 0;
-  left: 0;
-  width: calc(100%);
-}
-
 .top-margined {
   margin-top: 20px;
 }
 
 mat-sidenav-container {
-  height: calc(100vh - 64px);
+  height: calc(100vh - #{$appbarHeight});
 }
 
 .sidenav-content {
   height: 100%;
   overflow: hidden;
+}
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  height: $appbarHeight;
 }

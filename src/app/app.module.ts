@@ -12,12 +12,14 @@ import { MaterialModule } from './material/material.module';
 import { AudioService } from './services/audio/audio.service';
 import { FileService } from './services/file/file.service';
 import { FileChooserComponent } from './file-chooser/file-chooser.component';
+import { AudioPlayerComponent } from './audio-player/audio-player.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AudioVisualaserComponent,
-    FileChooserComponent
+    FileChooserComponent,
+    AudioPlayerComponent
   ],
   imports: [
     BrowserModule,

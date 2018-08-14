@@ -16,13 +16,8 @@
           <span>{{title}}</span>
       </mat-toolbar>
 
-      <div class="padded">
-        <app-file-chooser></app-file-chooser>
-        <button mat-raised-button class="spreading top-margined" color="primary" (click)="onBtnPlay()">Start</button>
-        <button mat-raised-button class="spreading top-margined" color="primary" (click)="setAudioSource()">Set audio source</button>
-      </div>
-
-      <audio #audioOption controls (play)="onPlay()"></audio>
+      <app-file-chooser></app-file-chooser>
+      <app-audio-player></app-audio-player>
     </mat-sidenav>
 
     <div class="sidenav-content">

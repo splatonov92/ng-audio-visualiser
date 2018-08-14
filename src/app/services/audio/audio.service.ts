@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Observer, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 class AudioData {
   bufferLength: number;
@@ -10,27 +10,33 @@ class AudioData {
 export class AudioService {
 
   private subject: Subject<AudioData>;
-  private data: Observable<AudioData>;
-  private dataObserver: Observer<AudioData>;
-  audioFile: File;
+  private fileUrl: Subject<string>;
+  private file: Subject<File>;
 
   constructor() {
     this.subject = new Subject<AudioData>();
+    this.fileUrl = new Subject<string>();
+    this.file = new Subject<File>();
   }
 
   setFile(file: File) {
-    this.audioFile = file;
+    this.file.next(file);
+    this.fileUrl.next(URL.createObjectURL(file));
   }
 
-  getFileUrl() {
-    return URL.createObjectURL(this.audioFile);
+  getFile() {
+    return this.file;
+  }
+
+  getFileUrl(): Observable<string> {
+    return this.fileUrl;
   }
 
   getAudioData(): Subject<AudioData> {
     return this.subject;
   }
 
-  setInitialData(data: AudioData) {
+  setAudioData(data: AudioData) {
     this.subject.next(data);
   }
 }

@@ -1,54 +1,30 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AudioService } from './services/audio/audio.service';
+import { Subscription } from 'rxjs';
+
+const TITLE = 'Audio Visualiser';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  @ViewChild('audioOption') audioPlayerRef: ElementRef;
-  title = 'Audio Visualiser';
+export class AppComponent implements OnInit, OnDestroy {
+
+  title = TITLE;
+  fileSubscription: Subscription;
 
   constructor(private audioService: AudioService) {
-
   }
 
-  setAudioSource() {
-    const audioPlayer = this.audioPlayerRef.nativeElement;
-    audioPlayer.src = this.audioService.getFileUrl();
-    audioPlayer.load();
+  ngOnInit() {
+    this.fileSubscription = this.audioService.getFile()
+      .subscribe((file: File) => {
+        this.title = `${TITLE} - ${file.name}`;
+      });
   }
 
-  onBtnPlay() {
-    this.audioPlayerRef.nativeElement.play();
-  }
-
-  onPlay() {
-    const audioPlayer = this.audioPlayerRef.nativeElement;
-    audioPlayer.play();
-
-    const context = new AudioContext();
-    const audioSrc = context.createMediaElementSource(audioPlayer);
-    const analyser = context.createAnalyser();
-
-    audioSrc.connect(analyser);
-    audioSrc.connect(context.destination);
-    analyser.fftSize = 1024;
-
-    const bufferLength = analyser.frequencyBinCount;
-    let dataArray = new Uint8Array(bufferLength);
-    const audioService = this.audioService;
-
-    audioService.setInitialData({bufferLength, dataArray});
-
-    function audioFrame() {
-      requestAnimationFrame(audioFrame);
-      dataArray = new Uint8Array(bufferLength);
-      analyser.getByteFrequencyData(dataArray);
-      audioService.setInitialData({bufferLength, dataArray});
-    }
-
-    audioFrame();
+  ngOnDestroy(): void {
+    this.fileSubscription.unsubscribe();
   }
 }

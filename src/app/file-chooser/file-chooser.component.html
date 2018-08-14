@@ -1,8 +1,11 @@
-<button mat-raised-button
-  class="speading"
-  color="primary"
+<button mat-button
+  class="speading left"
   (click)="audioInput.click()"
-  >Choose audio file</button>
+  style="text-align:left"
+  >
+  <mat-icon>audiotrack</mat-icon>
+  Choose audio file
+</button>
 
 <input hidden type="file" #audioInput
   (change)="setUpAudioFile($event.target.files)"/>
